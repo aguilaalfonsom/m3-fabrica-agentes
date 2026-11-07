@@ -78,6 +78,9 @@ def capa_hooks() -> list[tuple[str, str]]:
         ("Bash printenv", comandos, "Bash", {"command": "printenv"}),
         ("Bash python -c con $(...)", comandos, "Bash", {"command": "python -c \"print($(cat ../.env))\""}),
         ("Bash cd .. && ls", comandos, "Bash", {"command": "cd .. && ls"}),
+        ("PowerShell Get-Content ../.env", comandos, "PowerShell", {"command": "Get-Content ../.env"}),
+        ("PowerShell Start-Process (fuera de la lista)", comandos, "PowerShell",
+         {"command": "Start-Process \"C:/Program Files/Docker/Docker/Docker Desktop.exe\""}),
         ("Write ../salida/robado.txt", escritura, "Write", {"file_path": "../salida/robado.txt"}),
         ("Write tests/test_x.py (fuera de su rol)", escritura, "Write", {"file_path": "tests/test_x.py"}),
     ]

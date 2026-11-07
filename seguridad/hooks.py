@@ -105,6 +105,8 @@ def hooks_para(agente: str, base: Path, escritura: list[str], programas: set[str
     previos = [HookMatcher(matcher="Write|Edit|MultiEdit|NotebookEdit", hooks=[confinar_escritura(base, escritura)])]
     if os.environ.get("DEFENSAS", "1") != "0":
         previos += [HookMatcher(matcher="Read|Grep|Glob", hooks=[confinar_lectura(base)]),
-                    HookMatcher(matcher="Bash", hooks=[comandos_permitidos(base, programas)]),
+                    # PowerShell también es una terminal: la misma lista blanca aplica (defensa en profundidad,
+                    # además de quitarla en claude_code.py)
+                    HookMatcher(matcher="Bash|PowerShell", hooks=[comandos_permitidos(base, programas)]),
                     HookMatcher(hooks=[auditar(agente)])]
     return {"PreToolUse": previos}

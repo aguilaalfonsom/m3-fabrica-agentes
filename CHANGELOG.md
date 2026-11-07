@@ -56,6 +56,9 @@ artefactos de `salida/` los generan los agentes y no se editan a mano.
 ### Seguridad
 - `seguridad/hooks.py`: `_resolver` entiende rutas de Git Bash (`/c/...`) y comillas; `comandos_permitidos`
   separa argumentos con `shlex` para no confundir rutas con espacios. Ningún hook se quitó ni se relajó.
+- **PowerShell cerrado:** la auditoría mostró que en Windows los agentes usaban la herramienta `PowerShell`, que
+  no pasaba por `comandos_permitidos` (registrado solo para `Bash`). Ahora `PowerShell` está en `disallowed_tools`
+  y el hook usa `matcher="Bash|PowerShell"`; la demostración de ataque prueba ambos casos.
 - La auditoría ahora también registra las herramientas del analista y del diseñador; `AUDITORIA` permite
   separar el registro de la demostración de ataque (`evidencia/`).
 - `auditoria.jsonl` deja de ignorarse en Git: es parte de la entrega.

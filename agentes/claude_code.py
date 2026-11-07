@@ -38,7 +38,9 @@ def ejecutar_claude_code(prompt: str, *, agente: str, cwd: Path, herramientas: l
         setting_sources=["project"],              # carga el CLAUDE.md de cwd
         permission_mode="acceptEdits",            # edita sin pedir confirmación; los hooks ponen los límites
         allowed_tools=herramientas,
-        disallowed_tools=["WebFetch", "WebSearch"],  # sin salida a internet: rompe la tríada letal
+        # sin salida a internet (rompe la tríada letal) y sin PowerShell: en Windows Claude Code la ofrece
+        # además de Bash, y la auditoría de HU-10 mostró que la usaban; la terminal permitida es Bash con hooks
+        disallowed_tools=["WebFetch", "WebSearch", "PowerShell"],
         hooks=hooks_para(agente, cwd, escritura, programas),
         max_turns=80,
         max_budget_usd=float(os.environ.get("PRESUPUESTO_USD", "2")),
