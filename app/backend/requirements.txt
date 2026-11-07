@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+sqlalchemy>=2
+pydantic>=2

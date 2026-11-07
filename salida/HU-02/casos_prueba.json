@@ -1,0 +1,590 @@
+{
+  "historia": "HU-02",
+  "casos": [
+    {
+      "id": "CP-01",
+      "escenario": "Ver el directorio completo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados"
+      ],
+      "datos": {
+        "codigo": "200",
+        "total": "4",
+        "empleado_1": "EMP-0001, Ana Pérez, Desarrolladora, Tecnología, activo",
+        "empleado_2_numero": "EMP-0002"
+      },
+      "resultado_esperado": "200 con 4 empleados; el id 1 tiene los datos indicados y el id 2 tiene numero_empleado EMP-0002."
+    },
+    {
+      "id": "CP-02",
+      "escenario": "Ver el directorio completo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente",
+        "Buscador vacío y filtro de departamento sin selección"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Contar las filas de tabla-empleados",
+        "Leer fila-empleado-1",
+        "Leer numero-empleado-2"
+      ],
+      "datos": {
+        "filas": "4",
+        "fila-empleado-1": "EMP-0001, Ana Pérez, Desarrolladora, Tecnología, Activo",
+        "numero-empleado-2": "EMP-0002"
+      },
+      "resultado_esperado": "tabla-empleados muestra 4 filas; fila-empleado-1 contiene los textos indicados y numero-empleado-2 muestra EMP-0002."
+    },
+    {
+      "id": "CP-03",
+      "escenario": "Un empleado dado de baja sigue apareciendo en el directorio",
+      "nivel": "api",
+      "precondiciones": [
+        "El empleado EMP-0003 (id 3) tiene estado baja"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Buscar el empleado con id 3"
+      ],
+      "datos": {
+        "codigo": "200",
+        "id": "3",
+        "estado": "baja"
+      },
+      "resultado_esperado": "El empleado id 3 está en la lista con estado baja."
+    },
+    {
+      "id": "CP-04",
+      "escenario": "Un empleado dado de baja sigue apareciendo en el directorio",
+      "nivel": "e2e",
+      "precondiciones": [
+        "El empleado EMP-0003 tiene estado baja"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Verificar que fila-empleado-3 es visible",
+        "Leer estado-empleado-3"
+      ],
+      "datos": {
+        "fila": "fila-empleado-3",
+        "estado-empleado-3": "Baja"
+      },
+      "resultado_esperado": "fila-empleado-3 está visible y estado-empleado-3 muestra Baja."
+    },
+    {
+      "id": "CP-05",
+      "escenario": "Consultar el directorio por API",
+      "nivel": "api",
+      "precondiciones": [
+        "Hay 4 empleados registrados"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Verificar que cada empleado trae todos los campos"
+      ],
+      "datos": {
+        "codigo": "200",
+        "total": "4",
+        "campos": "id,numero_empleado,nombre,correo,puesto,departamento,fecha_ingreso,estado,fecha_baja,creado_en"
+      },
+      "resultado_esperado": "200 con lista de 4 empleados y cada uno incluye los 10 campos indicados."
+    },
+    {
+      "id": "CP-06",
+      "escenario": "Buscar por nombre",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar la lista por nombre o correo que contenga el texto (sin distinguir mayúsculas)"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "Luis",
+        "ids_esperados": "2"
+      },
+      "resultado_esperado": "Solo el empleado id 2 coincide con 'Luis'."
+    },
+    {
+      "id": "CP-07",
+      "escenario": "Buscar por nombre",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'Luis' en buscar-empleados",
+        "Revisar las filas de tabla-empleados"
+      ],
+      "datos": {
+        "texto": "Luis",
+        "fila_visible": "fila-empleado-2"
+      },
+      "resultado_esperado": "Solo se ve fila-empleado-2."
+    },
+    {
+      "id": "CP-08",
+      "escenario": "Buscar por correo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por correo que contenga el texto"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "marta.ruiz@empresa.com",
+        "ids_esperados": "3"
+      },
+      "resultado_esperado": "Solo el empleado id 3 coincide."
+    },
+    {
+      "id": "CP-09",
+      "escenario": "Buscar por correo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'marta.ruiz@empresa.com' en buscar-empleados",
+        "Revisar las filas"
+      ],
+      "datos": {
+        "texto": "marta.ruiz@empresa.com",
+        "fila_visible": "fila-empleado-3"
+      },
+      "resultado_esperado": "Solo se ve fila-empleado-3."
+    },
+    {
+      "id": "CP-10",
+      "escenario": "La búsqueda por nombre no distingue mayúsculas en mayúsculas",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por nombre sin distinguir mayúsculas"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "LUIS GÓMEZ",
+        "ids_esperados": "2"
+      },
+      "resultado_esperado": "Solo el empleado id 2 coincide."
+    },
+    {
+      "id": "CP-11",
+      "escenario": "La búsqueda por nombre no distingue mayúsculas en mayúsculas",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'LUIS GÓMEZ' en buscar-empleados",
+        "Revisar las filas"
+      ],
+      "datos": {
+        "texto": "LUIS GÓMEZ",
+        "fila_visible": "fila-empleado-2"
+      },
+      "resultado_esperado": "Solo se ve fila-empleado-2."
+    },
+    {
+      "id": "CP-12",
+      "escenario": "La búsqueda por nombre no distingue mayúsculas en minúsculas",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por nombre sin distinguir mayúsculas"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "luis gómez",
+        "ids_esperados": "2"
+      },
+      "resultado_esperado": "Solo el empleado id 2 coincide."
+    },
+    {
+      "id": "CP-13",
+      "escenario": "La búsqueda por nombre no distingue mayúsculas en minúsculas",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'luis gómez' en buscar-empleados",
+        "Revisar las filas"
+      ],
+      "datos": {
+        "texto": "luis gómez",
+        "fila_visible": "fila-empleado-2"
+      },
+      "resultado_esperado": "Solo se ve fila-empleado-2."
+    },
+    {
+      "id": "CP-14",
+      "escenario": "La búsqueda por correo no distingue mayúsculas de minúsculas",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por correo sin distinguir mayúsculas"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "ATORRES@EMPRESA.COM",
+        "ids_esperados": "4"
+      },
+      "resultado_esperado": "Solo el empleado id 4 coincide."
+    },
+    {
+      "id": "CP-15",
+      "escenario": "La búsqueda por correo no distingue mayúsculas de minúsculas",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'ATORRES@EMPRESA.COM' en buscar-empleados",
+        "Revisar las filas"
+      ],
+      "datos": {
+        "texto": "ATORRES@EMPRESA.COM",
+        "fila_visible": "fila-empleado-4"
+      },
+      "resultado_esperado": "Solo se ve fila-empleado-4."
+    },
+    {
+      "id": "CP-16",
+      "escenario": "La búsqueda por texto parcial devuelve varias coincidencias",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por nombre o correo que contenga el texto"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "ana",
+        "ids_esperados": "1,4"
+      },
+      "resultado_esperado": "Coinciden solo los empleados id 1 y 4."
+    },
+    {
+      "id": "CP-17",
+      "escenario": "La búsqueda por texto parcial devuelve varias coincidencias",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'ana' en buscar-empleados",
+        "Revisar las filas"
+      ],
+      "datos": {
+        "texto": "ana",
+        "filas_visibles": "fila-empleado-1,fila-empleado-4"
+      },
+      "resultado_esperado": "Se ven fila-empleado-1 y fila-empleado-4; fila-empleado-2 y fila-empleado-3 no se ven."
+    },
+    {
+      "id": "CP-18",
+      "escenario": "Filtrar por departamento",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar la lista por departamento igual a Ventas"
+      ],
+      "datos": {
+        "codigo": "200",
+        "departamento": "Ventas",
+        "ids_esperados": "2"
+      },
+      "resultado_esperado": "Solo el empleado id 2 pertenece a Ventas."
+    },
+    {
+      "id": "CP-19",
+      "escenario": "Filtrar por departamento",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Elegir 'Ventas' en filtro-departamento",
+        "Revisar las filas"
+      ],
+      "datos": {
+        "departamento": "Ventas",
+        "fila_visible": "fila-empleado-2"
+      },
+      "resultado_esperado": "Solo se ve fila-empleado-2."
+    },
+    {
+      "id": "CP-20",
+      "escenario": "Filtrar por un departamento válido sin empleados",
+      "nivel": "api",
+      "precondiciones": [
+        "Ningún empleado pertenece a Operaciones"
+      ],
+      "pasos": [
+        "Enviar GET /api/departamentos y verificar que incluye Operaciones",
+        "Enviar GET /api/empleados y filtrar por departamento Operaciones"
+      ],
+      "datos": {
+        "departamento": "Operaciones",
+        "codigo": "200",
+        "coincidencias": "0"
+      },
+      "resultado_esperado": "Operaciones es un departamento válido y ningún empleado coincide."
+    },
+    {
+      "id": "CP-21",
+      "escenario": "Filtrar por un departamento válido sin empleados",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Ningún empleado pertenece a Operaciones"
+      ],
+      "pasos": [
+        "Abrir el directorio",
+        "Elegir 'Operaciones' en filtro-departamento",
+        "Verificar filas y sin-resultados"
+      ],
+      "datos": {
+        "departamento": "Operaciones"
+      },
+      "resultado_esperado": "No hay filas en tabla-empleados y sin-resultados es visible."
+    },
+    {
+      "id": "CP-22",
+      "escenario": "Combinar búsqueda y filtro de departamento",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por texto 'ana' y departamento Tecnología"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "ana",
+        "departamento": "Tecnología",
+        "ids_esperados": "1"
+      },
+      "resultado_esperado": "Solo el empleado id 1 cumple ambos criterios."
+    },
+    {
+      "id": "CP-23",
+      "escenario": "Combinar búsqueda y filtro de departamento",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'ana' en buscar-empleados",
+        "Elegir 'Tecnología' en filtro-departamento",
+        "Revisar las filas"
+      ],
+      "datos": {
+        "texto": "ana",
+        "departamento": "Tecnología",
+        "fila_visible": "fila-empleado-1"
+      },
+      "resultado_esperado": "Solo se ve fila-empleado-1."
+    },
+    {
+      "id": "CP-24",
+      "escenario": "Búsqueda y filtro sin coincidencia conjunta",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por texto 'Luis' y departamento Finanzas"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "Luis",
+        "departamento": "Finanzas",
+        "coincidencias": "0"
+      },
+      "resultado_esperado": "Ningún empleado cumple ambos criterios."
+    },
+    {
+      "id": "CP-25",
+      "escenario": "Búsqueda y filtro sin coincidencia conjunta",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'Luis' en buscar-empleados",
+        "Elegir 'Finanzas' en filtro-departamento",
+        "Verificar filas y sin-resultados"
+      ],
+      "datos": {
+        "texto": "Luis",
+        "departamento": "Finanzas"
+      },
+      "resultado_esperado": "No hay filas y sin-resultados es visible."
+    },
+    {
+      "id": "CP-26",
+      "escenario": "Búsqueda sin resultados muestra un mensaje",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por texto 'Zacarías'"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "Zacarías",
+        "coincidencias": "0"
+      },
+      "resultado_esperado": "Ningún empleado coincide con 'Zacarías'."
+    },
+    {
+      "id": "CP-27",
+      "escenario": "Búsqueda sin resultados muestra un mensaje",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'Zacarías' en buscar-empleados",
+        "Verificar que tabla-empleados no tiene filas",
+        "Verificar sin-resultados"
+      ],
+      "datos": {
+        "texto": "Zacarías"
+      },
+      "resultado_esperado": "No hay filas y sin-resultados es visible con un mensaje de que no hay resultados (texto exacto no definido)."
+    },
+    {
+      "id": "CP-28",
+      "escenario": "Limpiar la búsqueda restaura el directorio",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Filtrar la lista con 'Zacarías' y verificar 0 coincidencias",
+        "Quitar el texto de búsqueda y enviar GET /api/empleados"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto_final": "",
+        "total": "4"
+      },
+      "resultado_esperado": "Sin texto de búsqueda la lista devuelve los 4 empleados."
+    },
+    {
+      "id": "CP-29",
+      "escenario": "Limpiar la búsqueda restaura el directorio",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Se escribió 'Zacarías' en buscar-empleados y sin-resultados es visible"
+      ],
+      "pasos": [
+        "Borrar el texto de buscar-empleados",
+        "Contar las filas de tabla-empleados",
+        "Verificar sin-resultados"
+      ],
+      "datos": {
+        "texto_inicial": "Zacarías",
+        "filas": "4"
+      },
+      "resultado_esperado": "Se ven las 4 filas y sin-resultados no es visible."
+    },
+    {
+      "id": "CP-30",
+      "escenario": "El mensaje de sin resultados no aparece cuando hay coincidencias",
+      "nivel": "api",
+      "precondiciones": [
+        "Existen los 4 empleados del antecedente"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados",
+        "Filtrar por texto 'Ana'"
+      ],
+      "datos": {
+        "codigo": "200",
+        "texto": "Ana",
+        "coincidencias": "2"
+      },
+      "resultado_esperado": "Hay 2 coincidencias, por lo que no corresponde mensaje de sin resultados."
+    },
+    {
+      "id": "CP-31",
+      "escenario": "El mensaje de sin resultados no aparece cuando hay coincidencias",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Directorio con las 4 filas visibles"
+      ],
+      "pasos": [
+        "Escribir 'Ana' en buscar-empleados",
+        "Verificar sin-resultados"
+      ],
+      "datos": {
+        "texto": "Ana"
+      },
+      "resultado_esperado": "sin-resultados no es visible."
+    },
+    {
+      "id": "CP-32",
+      "escenario": "Directorio vacío",
+      "nivel": "api",
+      "precondiciones": [
+        "No hay empleados registrados"
+      ],
+      "pasos": [
+        "Enviar GET /api/empleados"
+      ],
+      "datos": {
+        "codigo": "200",
+        "total": "0"
+      },
+      "resultado_esperado": "200 con una lista vacía."
+    },
+    {
+      "id": "CP-33",
+      "escenario": "Directorio vacío",
+      "nivel": "e2e",
+      "precondiciones": [
+        "No hay empleados registrados"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Verificar sin-resultados"
+      ],
+      "datos": {
+        "filas": "0"
+      },
+      "resultado_esperado": "sin-resultados es visible y tabla-empleados no tiene filas."
+    }
+  ]
+}

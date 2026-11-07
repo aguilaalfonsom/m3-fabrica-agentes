@@ -1,0 +1,674 @@
+{
+  "historia": "HU-10",
+  "casos": [
+    {
+      "id": "CP-01",
+      "escenario": "Solicitud válida por API descuenta solo días hábiles",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado activo id 7, fecha_ingreso 2024-03-10",
+        "Sin solicitudes de vacaciones"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones con fecha_inicio y fecha_fin"
+      ],
+      "datos": {
+        "empleado_id": "7",
+        "fecha_inicio": "2026-07-06",
+        "fecha_fin": "2026-07-10",
+        "codigo": "201",
+        "dias_habiles": "5",
+        "dias_restantes": "7"
+      },
+      "resultado_esperado": "201 con empleado_id 7, fecha_inicio 2026-07-06, fecha_fin 2026-07-10, dias_habiles 5 y dias_restantes 7"
+    },
+    {
+      "id": "CP-02",
+      "escenario": "Solicitud válida desde la pantalla muestra el mensaje de éxito",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Empleado activo id 7, fecha_ingreso 2024-03-10",
+        "Sin solicitudes de vacaciones"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Pulsar vacaciones-abrir-7",
+        "Verificar que vacaciones-disponibles muestra 12",
+        "Escribir 2026-07-06 en vacaciones-fecha-inicio",
+        "Escribir 2026-07-10 en vacaciones-fecha-fin",
+        "Pulsar vacaciones-enviar"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-07-06",
+        "fecha_fin": "2026-07-10",
+        "disponibles_inicial": "12",
+        "disponibles_final": "7"
+      },
+      "resultado_esperado": "vacaciones-mensaje muestra 'Solicitud registrada: 5 días hábiles. Te quedan 7 días hábiles en 2026.' y vacaciones-disponibles muestra 7"
+    },
+    {
+      "id": "CP-03",
+      "escenario": "Consultar el saldo del año tras una solicitud",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Solicitud registrada del 2026-12-21 al 2026-12-31"
+      ],
+      "pasos": [
+        "GET /api/empleados/7/vacaciones?anio=2026"
+      ],
+      "datos": {
+        "anio": "2026",
+        "codigo": "200",
+        "dias_usados": "8",
+        "dias_disponibles": "4",
+        "fecha_inicio": "2026-12-21",
+        "fecha_fin": "2026-12-31",
+        "dias_habiles": "8"
+      },
+      "resultado_esperado": "200, dias_usados 8, dias_disponibles 4 y solicitudes con un elemento 2026-12-21 a 2026-12-31 con dias_habiles 8"
+    },
+    {
+      "id": "CP-04",
+      "escenario": "Saldo de un año sin solicitudes",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "GET /api/empleados/7/vacaciones?anio=2027"
+      ],
+      "datos": {
+        "anio": "2027",
+        "codigo": "200",
+        "dias_usados": "0",
+        "dias_disponibles": "12",
+        "solicitudes": "[]"
+      },
+      "resultado_esperado": "200, dias_usados 0, dias_disponibles 12 y solicitudes vacía"
+    },
+    {
+      "id": "CP-05",
+      "escenario": "Un día festivo dentro del periodo no se descuenta",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-09-14",
+        "fecha_fin": "2026-09-18",
+        "codigo": "201",
+        "dias_habiles": "4",
+        "dias_restantes": "8"
+      },
+      "resultado_esperado": "201, dias_habiles 4 y dias_restantes 8"
+    },
+    {
+      "id": "CP-06",
+      "escenario": "Fines de semana y Navidad no se descuentan",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-12-21",
+        "fecha_fin": "2026-12-31",
+        "codigo": "201",
+        "dias_habiles": "8",
+        "dias_restantes": "4"
+      },
+      "resultado_esperado": "201, dias_habiles 8 y dias_restantes 4"
+    },
+    {
+      "id": "CP-07",
+      "escenario": "Un festivo de 2027 también se excluye",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2027-09-13",
+        "fecha_fin": "2027-09-17",
+        "codigo": "201",
+        "dias_habiles": "4",
+        "dias_restantes": "8"
+      },
+      "resultado_esperado": "201, dias_habiles 4 y dias_restantes 8"
+    },
+    {
+      "id": "CP-08",
+      "escenario": "Un solo día hábil cuenta como 1 día",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-07-06",
+        "fecha_fin": "2026-07-06",
+        "codigo": "201",
+        "dias_habiles": "1",
+        "dias_restantes": "11"
+      },
+      "resultado_esperado": "201, dias_habiles 1 y dias_restantes 11"
+    },
+    {
+      "id": "CP-09",
+      "escenario": "Periodo de sábado y domingo se rechaza",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-07-11",
+        "fecha_fin": "2026-07-12",
+        "codigo": "400",
+        "detail": "El periodo no incluye días hábiles"
+      },
+      "resultado_esperado": "400 con detail 'El periodo no incluye días hábiles'"
+    },
+    {
+      "id": "CP-10",
+      "escenario": "Periodo formado solo por un festivo en sábado y un domingo se rechaza",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2027-05-01",
+        "fecha_fin": "2027-05-02",
+        "codigo": "400",
+        "detail": "El periodo no incluye días hábiles"
+      },
+      "resultado_esperado": "400 con detail 'El periodo no incluye días hábiles'"
+    },
+    {
+      "id": "CP-11",
+      "escenario": "Periodo de un solo día festivo se rechaza",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-09-16",
+        "fecha_fin": "2026-09-16",
+        "codigo": "400",
+        "detail": "El periodo no incluye días hábiles"
+      },
+      "resultado_esperado": "400 con detail 'El periodo no incluye días hábiles'"
+    },
+    {
+      "id": "CP-12",
+      "escenario": "Cumple exactamente un año de antigüedad el día de inicio",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado activo id 8, fecha_ingreso 2025-12-21",
+        "Sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/8/vacaciones"
+      ],
+      "datos": {
+        "empleado_id": "8",
+        "fecha_inicio": "2026-12-21",
+        "fecha_fin": "2026-12-31",
+        "codigo": "201",
+        "dias_habiles": "8",
+        "dias_restantes": "4"
+      },
+      "resultado_esperado": "201, dias_habiles 8 y dias_restantes 4"
+    },
+    {
+      "id": "CP-13",
+      "escenario": "Le faltan días para cumplir un año",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado activo id 8, fecha_ingreso 2025-12-21"
+      ],
+      "pasos": [
+        "POST /api/empleados/8/vacaciones"
+      ],
+      "datos": {
+        "empleado_id": "8",
+        "fecha_inicio": "2026-12-18",
+        "fecha_fin": "2026-12-18",
+        "codigo": "400",
+        "detail": "Se requiere al menos un año de antigüedad a la fecha de inicio"
+      },
+      "resultado_esperado": "400 con detail de antigüedad"
+    },
+    {
+      "id": "CP-14",
+      "escenario": "Falta un solo día para cumplir un año",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado activo id 8, fecha_ingreso 2025-12-21"
+      ],
+      "pasos": [
+        "POST /api/empleados/8/vacaciones"
+      ],
+      "datos": {
+        "empleado_id": "8",
+        "fecha_inicio": "2026-12-20",
+        "fecha_fin": "2026-12-22",
+        "codigo": "400",
+        "detail": "Se requiere al menos un año de antigüedad a la fecha de inicio"
+      },
+      "resultado_esperado": "400 con detail de antigüedad"
+    },
+    {
+      "id": "CP-15",
+      "escenario": "La antigüedad se valida antes que los días hábiles",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado activo id 8, fecha_ingreso 2025-12-21"
+      ],
+      "pasos": [
+        "POST /api/empleados/8/vacaciones con periodo sábado-domingo"
+      ],
+      "datos": {
+        "empleado_id": "8",
+        "fecha_inicio": "2026-07-11",
+        "fecha_fin": "2026-07-12",
+        "codigo": "400",
+        "detail": "Se requiere al menos un año de antigüedad a la fecha de inicio"
+      },
+      "resultado_esperado": "400 con detail de antigüedad, no el de días hábiles"
+    },
+    {
+      "id": "CP-16",
+      "escenario": "Usar exactamente los días que quedan",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 5 días hábiles en 2026"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-07-13",
+        "fecha_fin": "2026-07-21",
+        "codigo": "201",
+        "dias_habiles": "7",
+        "dias_restantes": "0"
+      },
+      "resultado_esperado": "201, dias_habiles 7 y dias_restantes 0"
+    },
+    {
+      "id": "CP-17",
+      "escenario": "Pedir un día más de los que quedan",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 11 días hábiles en 2026"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-07-06",
+        "fecha_fin": "2026-07-07",
+        "codigo": "400",
+        "detail": "La solicitud excede los días disponibles: quedan 1 días hábiles"
+      },
+      "resultado_esperado": "400 con detail 'La solicitud excede los días disponibles: quedan 1 días hábiles'"
+    },
+    {
+      "id": "CP-18",
+      "escenario": "Pedir el último día disponible",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 11 días hábiles en 2026"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-07-06",
+        "fecha_fin": "2026-07-06",
+        "codigo": "201",
+        "dias_habiles": "1",
+        "dias_restantes": "0"
+      },
+      "resultado_esperado": "201, dias_habiles 1 y dias_restantes 0"
+    },
+    {
+      "id": "CP-19",
+      "escenario": "Solicitud que rebasa el saldo",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 4 días hábiles en 2026"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-08-03",
+        "fecha_fin": "2026-08-13",
+        "codigo": "400",
+        "detail": "La solicitud excede los días disponibles: quedan 8 días hábiles"
+      },
+      "resultado_esperado": "400 con detail 'La solicitud excede los días disponibles: quedan 8 días hábiles'"
+    },
+    {
+      "id": "CP-20",
+      "escenario": "Sin días disponibles",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 12 días hábiles en 2026"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-08-03",
+        "fecha_fin": "2026-08-03",
+        "codigo": "400",
+        "detail": "La solicitud excede los días disponibles: quedan 0 días hábiles"
+      },
+      "resultado_esperado": "400 con detail 'La solicitud excede los días disponibles: quedan 0 días hábiles'"
+    },
+    {
+      "id": "CP-21",
+      "escenario": "Un periodo de más de 12 días hábiles con saldo completo se rechaza",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo sin solicitudes"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-08-03",
+        "fecha_fin": "2026-08-19",
+        "codigo": "400",
+        "detail": "La solicitud excede los días disponibles: quedan 12 días hábiles"
+      },
+      "resultado_esperado": "400 con detail 'La solicitud excede los días disponibles: quedan 12 días hábiles'"
+    },
+    {
+      "id": "CP-22",
+      "escenario": "El error de tope se muestra en la pantalla",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 12 días hábiles en 2026"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Pulsar vacaciones-abrir-7",
+        "Escribir 2026-08-03 en vacaciones-fecha-inicio",
+        "Escribir 2026-08-03 en vacaciones-fecha-fin",
+        "Pulsar vacaciones-enviar"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-08-03",
+        "fecha_fin": "2026-08-03",
+        "disponibles": "0"
+      },
+      "resultado_esperado": "vacaciones-mensaje muestra 'La solicitud excede los días disponibles: quedan 0 días hábiles' y vacaciones-disponibles muestra 0"
+    },
+    {
+      "id": "CP-23",
+      "escenario": "Los días usados en 2026 no afectan el saldo de 2027",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 12 días hábiles en 2026"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2027-07-05",
+        "fecha_fin": "2027-07-09",
+        "codigo": "201",
+        "dias_habiles": "5",
+        "dias_restantes": "7"
+      },
+      "resultado_esperado": "201, dias_habiles 5 y dias_restantes 7"
+    },
+    {
+      "id": "CP-24",
+      "escenario": "Fecha de fin anterior a la de inicio",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-07-10",
+        "fecha_fin": "2026-07-06",
+        "codigo": "400",
+        "detail": "La fecha de fin no puede ser anterior a la fecha de inicio"
+      },
+      "resultado_esperado": "400 con detail 'La fecha de fin no puede ser anterior a la fecha de inicio'"
+    },
+    {
+      "id": "CP-25",
+      "escenario": "Periodo que cruza de un año a otro",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-12-28",
+        "fecha_fin": "2027-01-08",
+        "codigo": "400",
+        "detail": "Las vacaciones deben estar dentro de un mismo año calendario"
+      },
+      "resultado_esperado": "400 con detail 'Las vacaciones deben estar dentro de un mismo año calendario'"
+    },
+    {
+      "id": "CP-26",
+      "escenario": "Año fuera de la tabla de festivos",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2028-01-10",
+        "fecha_fin": "2028-01-14",
+        "codigo": "400",
+        "detail": "Solo se pueden solicitar vacaciones en 2026 y 2027"
+      },
+      "resultado_esperado": "400 con detail 'Solo se pueden solicitar vacaciones en 2026 y 2027'"
+    },
+    {
+      "id": "CP-27",
+      "escenario": "Año anterior a la tabla de festivos",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones"
+      ],
+      "datos": {
+        "fecha_inicio": "2025-12-15",
+        "fecha_fin": "2025-12-19",
+        "codigo": "400",
+        "detail": "Solo se pueden solicitar vacaciones en 2026 y 2027"
+      },
+      "resultado_esperado": "400 con detail 'Solo se pueden solicitar vacaciones en 2026 y 2027'"
+    },
+    {
+      "id": "CP-28",
+      "escenario": "Empleado que no existe",
+      "nivel": "api",
+      "precondiciones": [
+        "No existe empleado con id 9999"
+      ],
+      "pasos": [
+        "POST /api/empleados/9999/vacaciones"
+      ],
+      "datos": {
+        "empleado_id": "9999",
+        "fecha_inicio": "2026-07-06",
+        "fecha_fin": "2026-07-10",
+        "codigo": "404",
+        "detail": "Empleado no encontrado"
+      },
+      "resultado_esperado": "404 con detail 'Empleado no encontrado'"
+    },
+    {
+      "id": "CP-29",
+      "escenario": "Empleado dado de baja",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado id 10 en estado baja"
+      ],
+      "pasos": [
+        "POST /api/empleados/10/vacaciones"
+      ],
+      "datos": {
+        "empleado_id": "10",
+        "fecha_inicio": "2026-07-06",
+        "fecha_fin": "2026-07-10",
+        "codigo": "409",
+        "detail": "No se pueden solicitar vacaciones para un empleado dado de baja"
+      },
+      "resultado_esperado": "409 con detail 'No se pueden solicitar vacaciones para un empleado dado de baja'"
+    },
+    {
+      "id": "CP-30",
+      "escenario": "El empleado dado de baja se valida antes que las fechas",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado id 10 en estado baja"
+      ],
+      "pasos": [
+        "POST /api/empleados/10/vacaciones con fecha_fin anterior a fecha_inicio"
+      ],
+      "datos": {
+        "empleado_id": "10",
+        "fecha_inicio": "2026-07-10",
+        "fecha_fin": "2026-07-06",
+        "codigo": "409",
+        "detail": "No se pueden solicitar vacaciones para un empleado dado de baja"
+      },
+      "resultado_esperado": "409 con detail de empleado dado de baja"
+    },
+    {
+      "id": "CP-31",
+      "escenario": "Formato de fecha inválido",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo"
+      ],
+      "pasos": [
+        "POST /api/empleados/7/vacaciones con fecha_inicio en formato DD/MM/AAAA"
+      ],
+      "datos": {
+        "fecha_inicio": "10/07/2026",
+        "fecha_fin": "2026-07-12",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 (validación automática de FastAPI)"
+    },
+    {
+      "id": "CP-32",
+      "escenario": "Una solicitud rechazada no descuenta días",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 7 activo",
+        "Ya usó 4 días hábiles en 2026",
+        "POST 2026-08-03 a 2026-08-13 rechazado con 400 por exceder el saldo"
+      ],
+      "pasos": [
+        "GET /api/empleados/7/vacaciones?anio=2026"
+      ],
+      "datos": {
+        "anio": "2026",
+        "codigo": "200",
+        "dias_usados": "4",
+        "dias_disponibles": "8"
+      },
+      "resultado_esperado": "dias_usados 4 y dias_disponibles 8"
+    },
+    {
+      "id": "CP-33",
+      "escenario": "El botón de vacaciones aparece en empleados activos",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Empleado activo id 7"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Buscar el elemento vacaciones-abrir-7"
+      ],
+      "datos": {
+        "testid": "vacaciones-abrir-7"
+      },
+      "resultado_esperado": "Existe el elemento vacaciones-abrir-7"
+    },
+    {
+      "id": "CP-34",
+      "escenario": "Un empleado dado de baja no tiene botón de vacaciones",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Empleado id 10 en estado baja"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Buscar el elemento vacaciones-abrir-10"
+      ],
+      "datos": {
+        "testid": "vacaciones-abrir-10"
+      },
+      "resultado_esperado": "No existe el elemento vacaciones-abrir-10"
+    },
+    {
+      "id": "CP-35",
+      "escenario": "El error de antigüedad se muestra en la pantalla",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Empleado activo id 8, fecha_ingreso 2025-12-21"
+      ],
+      "pasos": [
+        "Abrir el directorio de empleados",
+        "Pulsar vacaciones-abrir-8",
+        "Escribir 2026-12-18 en vacaciones-fecha-inicio",
+        "Escribir 2026-12-18 en vacaciones-fecha-fin",
+        "Pulsar vacaciones-enviar"
+      ],
+      "datos": {
+        "fecha_inicio": "2026-12-18",
+        "fecha_fin": "2026-12-18"
+      },
+      "resultado_esperado": "vacaciones-mensaje muestra 'Se requiere al menos un año de antigüedad a la fecha de inicio'"
+    }
+  ]
+}

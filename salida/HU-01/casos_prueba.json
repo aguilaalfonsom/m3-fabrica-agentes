@@ -1,0 +1,851 @@
+{
+  "historia": "HU-01",
+  "casos": [
+    {
+      "id": "CP-01",
+      "escenario": "Registro exitoso del primer empleado",
+      "nivel": "api",
+      "precondiciones": [
+        "Base de datos sin empleados",
+        "Fecha del sistema 2026-11-06"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con los datos",
+        "Verificar código y cuerpo de la respuesta"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "201",
+        "numero_empleado": "EMP-0001",
+        "estado": "activo",
+        "fecha_baja": "null"
+      },
+      "resultado_esperado": "201; numero_empleado EMP-0001; estado activo; fecha_baja nula; creado_en con fecha y hora del registro."
+    },
+    {
+      "id": "CP-02",
+      "escenario": "La pantalla muestra confirmación con el número asignado",
+      "nivel": "api",
+      "precondiciones": [
+        "Base de datos sin empleados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con datos válidos de Ana Pérez",
+        "Hacer GET /api/empleados"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "201",
+        "numero_empleado": "EMP-0001"
+      },
+      "resultado_esperado": "201 y el listado contiene al empleado con EMP-0001 y estado activo."
+    },
+    {
+      "id": "CP-03",
+      "escenario": "La pantalla muestra confirmación con el número asignado",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Base de datos sin empleados",
+        "Formulario de registro abierto"
+      ],
+      "pasos": [
+        "Escribir 'Ana Pérez' en empleado-nombre",
+        "Escribir 'ana.perez@empresa.com' en empleado-correo",
+        "Escribir 'Analista' en empleado-puesto",
+        "Elegir 'Tecnología' en empleado-departamento",
+        "Escribir '2026-01-15' en empleado-fecha-ingreso",
+        "Pulsar empleado-guardar",
+        "Verificar mensaje-exito, numero-empleado-{id} dentro de tabla-empleados y estado-empleado-{id}"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15"
+      },
+      "resultado_esperado": "mensaje-exito visible y contiene 'EMP-0001'; la fila en tabla-empleados muestra 'EMP-0001' en numero-empleado-{id}; estado-empleado-{id} muestra 'Activo'."
+    },
+    {
+      "id": "CP-04",
+      "escenario": "El número de empleado es consecutivo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe un empleado con numero_empleado EMP-0001"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con los datos de Luis Gómez"
+      ],
+      "datos": {
+        "nombre": "Luis Gómez",
+        "correo": "luis.gomez@empresa.com",
+        "puesto": "Vendedor",
+        "departamento": "Ventas",
+        "fecha_ingreso": "2026-02-02",
+        "codigo": "201",
+        "numero_empleado": "EMP-0002"
+      },
+      "resultado_esperado": "201 y numero_empleado EMP-0002."
+    },
+    {
+      "id": "CP-05",
+      "escenario": "El número de empleado lo asigna el sistema aunque se envíe uno",
+      "nivel": "api",
+      "precondiciones": [
+        "Base de datos sin empleados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con datos válidos de Ana Pérez más numero_empleado EMP-0999"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "numero_empleado_enviado": "EMP-0999",
+        "codigo": "201",
+        "numero_empleado": "EMP-0001"
+      },
+      "resultado_esperado": "201 y numero_empleado EMP-0001 (se ignora el enviado)."
+    },
+    {
+      "id": "CP-06",
+      "escenario": "El correo se guarda en minúsculas",
+      "nivel": "api",
+      "precondiciones": [
+        "No existe empleado con correo marta.ruiz@empresa.com"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con correo con mayúsculas",
+        "Verificar el correo en la respuesta"
+      ],
+      "datos": {
+        "nombre": "Marta Ruiz",
+        "correo": "Marta.Ruiz@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Finanzas",
+        "fecha_ingreso": "2026-03-01",
+        "codigo": "201",
+        "correo_guardado": "marta.ruiz@empresa.com"
+      },
+      "resultado_esperado": "201 y correo guardado 'marta.ruiz@empresa.com'."
+    },
+    {
+      "id": "CP-07",
+      "escenario": "Departamento \"Recursos Humanos\" del catálogo es aceptado",
+      "nivel": "api",
+      "precondiciones": [
+        "GET /api/departamentos devuelve Tecnología, Ventas, Finanzas, Recursos Humanos y Operaciones"
+      ],
+      "pasos": [
+        "Verificar GET /api/departamentos incluye 'Recursos Humanos'",
+        "Enviar POST /api/empleados con departamento 'Recursos Humanos'"
+      ],
+      "datos": {
+        "nombre": "Eva Soto",
+        "correo": "eva.soto@empresa.com",
+        "puesto": "Reclutadora",
+        "departamento": "Recursos Humanos",
+        "fecha_ingreso": "2026-03-10",
+        "codigo": "201"
+      },
+      "resultado_esperado": "201 y departamento guardado 'Recursos Humanos'."
+    },
+    {
+      "id": "CP-08",
+      "escenario": "Correo duplicado con el mismo texto",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe un empleado con correo ana.perez@empresa.com"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con otra persona y el mismo correo",
+        "Hacer GET /api/empleados y contar"
+      ],
+      "datos": {
+        "nombre": "Carla Núñez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-04-01",
+        "codigo": "409",
+        "detail": "El correo ya está registrado"
+      },
+      "resultado_esperado": "409 con detail 'El correo ya está registrado'; no se crea ningún empleado nuevo."
+    },
+    {
+      "id": "CP-09",
+      "escenario": "Correo duplicado sin importar mayúsculas",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe un empleado con correo ana.perez@empresa.com"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con correo ANA.PEREZ@empresa.com"
+      ],
+      "datos": {
+        "nombre": "Carla Núñez",
+        "correo": "ANA.PEREZ@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-04-01",
+        "codigo": "409",
+        "detail": "El correo ya está registrado"
+      },
+      "resultado_esperado": "409 con detail 'El correo ya está registrado'."
+    },
+    {
+      "id": "CP-10",
+      "escenario": "La pantalla muestra el error de correo duplicado",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe un empleado con correo ana.perez@empresa.com"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con el correo repetido"
+      ],
+      "datos": {
+        "nombre": "Carla Núñez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-04-01",
+        "codigo": "409",
+        "detail": "El correo ya está registrado"
+      },
+      "resultado_esperado": "409 con detail 'El correo ya está registrado'."
+    },
+    {
+      "id": "CP-11",
+      "escenario": "La pantalla muestra el error de correo duplicado",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe un empleado con correo ana.perez@empresa.com",
+        "Formulario de registro abierto"
+      ],
+      "pasos": [
+        "Escribir 'Carla Núñez' en empleado-nombre",
+        "Escribir 'ana.perez@empresa.com' en empleado-correo",
+        "Escribir 'Analista' en empleado-puesto",
+        "Elegir 'Tecnología' en empleado-departamento",
+        "Escribir '2026-04-01' en empleado-fecha-ingreso",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "correo": "ana.perez@empresa.com"
+      },
+      "resultado_esperado": "mensaje-error visible y contiene 'El correo ya está registrado'."
+    },
+    {
+      "id": "CP-12",
+      "escenario": "Correo con dominio distinto al corporativo",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con correo de gmail.com"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@gmail.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422",
+        "detail": "Usa el correo corporativo @empresa.com"
+      },
+      "resultado_esperado": "422 con detail 'Usa el correo corporativo @empresa.com'."
+    },
+    {
+      "id": "CP-13",
+      "escenario": "Correo sin arroba ni dominio",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con correo 'ana.perez'"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422",
+        "detail": "Usa el correo corporativo @empresa.com"
+      },
+      "resultado_esperado": "422 con detail 'Usa el correo corporativo @empresa.com'."
+    },
+    {
+      "id": "CP-14",
+      "escenario": "La pantalla muestra el error de dominio de correo",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con correo ana.perez@otraempresa.com"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@otraempresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422",
+        "detail": "Usa el correo corporativo @empresa.com"
+      },
+      "resultado_esperado": "422 con detail 'Usa el correo corporativo @empresa.com'."
+    },
+    {
+      "id": "CP-15",
+      "escenario": "La pantalla muestra el error de dominio de correo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario de registro abierto con datos válidos en los demás campos"
+      ],
+      "pasos": [
+        "Escribir 'Ana Pérez' en empleado-nombre",
+        "Escribir 'ana.perez@otraempresa.com' en empleado-correo",
+        "Escribir 'Analista' en empleado-puesto",
+        "Elegir 'Tecnología' en empleado-departamento",
+        "Escribir '2026-01-15' en empleado-fecha-ingreso",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "correo": "ana.perez@otraempresa.com"
+      },
+      "resultado_esperado": "mensaje-error visible y contiene 'Usa el correo corporativo @empresa.com'."
+    },
+    {
+      "id": "CP-16",
+      "escenario": "Fecha de ingreso de hoy es válida (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Fecha del sistema 2026-11-06"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con fecha_ingreso de hoy"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-11-06",
+        "codigo": "201"
+      },
+      "resultado_esperado": "201."
+    },
+    {
+      "id": "CP-17",
+      "escenario": "Fecha de ingreso de mañana ya no es válida (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Fecha del sistema 2026-11-06"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con fecha_ingreso 2026-11-07",
+        "Hacer GET /api/empleados y verificar que no se creó"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-11-07",
+        "codigo": "422",
+        "detail": "La fecha de ingreso no puede ser futura"
+      },
+      "resultado_esperado": "422 con detail 'La fecha de ingreso no puede ser futura'; no se crea ningún empleado."
+    },
+    {
+      "id": "CP-18",
+      "escenario": "Fecha de ingreso en el pasado es válida",
+      "nivel": "api",
+      "precondiciones": [
+        "Fecha del sistema 2026-11-06"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con fecha_ingreso 2025-12-21"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2025-12-21",
+        "codigo": "201"
+      },
+      "resultado_esperado": "201."
+    },
+    {
+      "id": "CP-19",
+      "escenario": "La pantalla muestra el error de fecha futura",
+      "nivel": "api",
+      "precondiciones": [
+        "Fecha del sistema 2026-11-06"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con fecha_ingreso 2026-12-01"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-12-01",
+        "codigo": "422",
+        "detail": "La fecha de ingreso no puede ser futura"
+      },
+      "resultado_esperado": "422 con detail 'La fecha de ingreso no puede ser futura'."
+    },
+    {
+      "id": "CP-20",
+      "escenario": "La pantalla muestra el error de fecha futura",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Fecha del sistema 2026-11-06",
+        "Formulario abierto con datos válidos"
+      ],
+      "pasos": [
+        "Escribir 'Ana Pérez' en empleado-nombre",
+        "Escribir 'ana.perez@empresa.com' en empleado-correo",
+        "Escribir 'Analista' en empleado-puesto",
+        "Elegir 'Tecnología' en empleado-departamento",
+        "Escribir '2026-12-01' en empleado-fecha-ingreso",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "fecha_ingreso": "2026-12-01"
+      },
+      "resultado_esperado": "mensaje-error visible y contiene 'La fecha de ingreso no puede ser futura'."
+    },
+    {
+      "id": "CP-21",
+      "escenario": "Nombre de 2 caracteres es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con nombre 'Li'"
+      ],
+      "datos": {
+        "nombre": "Li",
+        "correo": "li@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "201"
+      },
+      "resultado_esperado": "201."
+    },
+    {
+      "id": "CP-22",
+      "escenario": "Nombre de 1 carácter no es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con nombre 'L'"
+      ],
+      "datos": {
+        "nombre": "L",
+        "correo": "l@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-23",
+      "escenario": "Nombre de 1 carácter no es válido (límite)",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Escribir 'L' en empleado-nombre",
+        "Completar empleado-correo con 'l@empresa.com', empleado-puesto con 'Analista', empleado-departamento 'Tecnología', empleado-fecha-ingreso '2026-01-15'",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "nombre": "L"
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo nombre."
+    },
+    {
+      "id": "CP-24",
+      "escenario": "Nombre de 80 caracteres es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con nombre de 80 'A'"
+      ],
+      "datos": {
+        "nombre": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "correo": "nombre80@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "201"
+      },
+      "resultado_esperado": "201."
+    },
+    {
+      "id": "CP-25",
+      "escenario": "Nombre de 81 caracteres no es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con nombre de 81 'A'"
+      ],
+      "datos": {
+        "nombre": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "correo": "nombre81@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-26",
+      "escenario": "Nombre de 81 caracteres no es válido (límite)",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Escribir 81 'A' en empleado-nombre",
+        "Completar los demás campos con datos válidos",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "nombre": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "correo": "nombre81@empresa.com"
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo nombre."
+    },
+    {
+      "id": "CP-27",
+      "escenario": "Nombre vacío",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con nombre vacío"
+      ],
+      "datos": {
+        "nombre": "",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-28",
+      "escenario": "Nombre vacío",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Dejar vacío empleado-nombre",
+        "Completar los demás campos con datos válidos",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "nombre": ""
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo nombre."
+    },
+    {
+      "id": "CP-29",
+      "escenario": "Puesto de 2 caracteres es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con puesto 'TI'"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "TI",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "201"
+      },
+      "resultado_esperado": "201."
+    },
+    {
+      "id": "CP-30",
+      "escenario": "Puesto de 1 carácter no es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con puesto 'T'"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "T",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-31",
+      "escenario": "Puesto de 1 carácter no es válido (límite)",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Escribir 'T' en empleado-puesto",
+        "Completar los demás campos con datos válidos",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "puesto": "T"
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo puesto."
+    },
+    {
+      "id": "CP-32",
+      "escenario": "Puesto de 60 caracteres es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con puesto de 60 'B'"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "201"
+      },
+      "resultado_esperado": "201."
+    },
+    {
+      "id": "CP-33",
+      "escenario": "Puesto de 61 caracteres no es válido (límite)",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con puesto de 61 'B'"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-34",
+      "escenario": "Puesto de 61 caracteres no es válido (límite)",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Escribir 61 'B' en empleado-puesto",
+        "Completar los demás campos con datos válidos",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "puesto": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo puesto."
+    },
+    {
+      "id": "CP-35",
+      "escenario": "Puesto vacío",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con puesto vacío"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-36",
+      "escenario": "Puesto vacío",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Dejar vacío empleado-puesto",
+        "Completar los demás campos con datos válidos",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "puesto": ""
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo puesto."
+    },
+    {
+      "id": "CP-37",
+      "escenario": "Departamento fuera del catálogo",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con departamento 'Marketing'"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Marketing",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-38",
+      "escenario": "Departamento fuera del catálogo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto",
+        "'Marketing' no está en el catálogo del selector"
+      ],
+      "pasos": [
+        "Completar los campos con datos válidos",
+        "Dejar empleado-departamento sin una opción válida del catálogo (o forzar el valor 'Marketing' si el control lo permite)",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "departamento": "Marketing"
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo departamento."
+    },
+    {
+      "id": "CP-39",
+      "escenario": "Correo vacío",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con correo vacío"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "2026-01-15",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-40",
+      "escenario": "Correo vacío",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Dejar vacío empleado-correo",
+        "Completar los demás campos con datos válidos",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "correo": ""
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo correo."
+    },
+    {
+      "id": "CP-41",
+      "escenario": "Fecha de ingreso vacía",
+      "nivel": "api",
+      "precondiciones": [
+        "Datos válidos preparados"
+      ],
+      "pasos": [
+        "Enviar POST /api/empleados con fecha_ingreso vacía"
+      ],
+      "datos": {
+        "nombre": "Ana Pérez",
+        "correo": "ana.perez@empresa.com",
+        "puesto": "Analista",
+        "departamento": "Tecnología",
+        "fecha_ingreso": "",
+        "codigo": "422"
+      },
+      "resultado_esperado": "422 y no se crea el empleado."
+    },
+    {
+      "id": "CP-42",
+      "escenario": "Fecha de ingreso vacía",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Formulario abierto"
+      ],
+      "pasos": [
+        "Dejar vacío empleado-fecha-ingreso",
+        "Completar los demás campos con datos válidos",
+        "Pulsar empleado-guardar"
+      ],
+      "datos": {
+        "fecha_ingreso": ""
+      },
+      "resultado_esperado": "mensaje-error visible indicando que se debe corregir el campo fecha de ingreso."
+    }
+  ]
+}

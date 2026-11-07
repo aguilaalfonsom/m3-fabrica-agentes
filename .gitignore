@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+app/frontend/node_modules/
+app/frontend/dist/
+app/backend/datos/
+app/test-results/
+ejemplos/salidas/
+.pytest_cache/
+checkpoints.pkl
+.despliegue_local.json
+logs/

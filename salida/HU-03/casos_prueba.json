@@ -1,0 +1,436 @@
+{
+  "historia": "HU-03",
+  "casos": [
+    {
+      "id": "CP-01",
+      "escenario": "Cambiar puesto y departamento de un empleado activo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1, EMP-0001, Ana Torres, ana.torres@empresa.com, Analista, Ventas, ingreso 2024-03-10, activo"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con PUT /api/empleados/1 (endpoint asumido) enviando puesto y departamento",
+        "Consultar GET /api/empleados/1"
+      ],
+      "datos": {
+        "puesto": "Líder de Finanzas",
+        "departamento": "Finanzas",
+        "status": "200"
+      },
+      "resultado_esperado": "La API responde 200 y el empleado 1 tiene puesto 'Líder de Finanzas' y departamento 'Finanzas'."
+    },
+    {
+      "id": "CP-02",
+      "escenario": "Cambiar puesto y departamento de un empleado activo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo con puesto Analista y departamento Ventas"
+      ],
+      "pasos": [
+        "Abrir el directorio",
+        "Clic en editar-empleado-1",
+        "Escribir el puesto en empleado-puesto",
+        "Seleccionar el departamento en empleado-departamento",
+        "Clic en empleado-guardar",
+        "Verificar mensaje-exito",
+        "Verificar fila-empleado-1 en tabla-empleados"
+      ],
+      "datos": {
+        "puesto": "Líder de Finanzas",
+        "departamento": "Finanzas"
+      },
+      "resultado_esperado": "mensaje-exito indica que el cambio se guardó y fila-empleado-1 muestra 'Líder de Finanzas' y 'Finanzas'."
+    },
+    {
+      "id": "CP-03",
+      "escenario": "El número de empleado y el correo no cambian al editar",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo (EMP-0001, ana.torres@empresa.com)"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con puesto y departamento nuevos",
+        "Consultar GET /api/empleados/1"
+      ],
+      "datos": {
+        "puesto": "Líder de Finanzas",
+        "departamento": "Finanzas",
+        "numero_empleado": "EMP-0001",
+        "correo": "ana.torres@empresa.com",
+        "nombre": "Ana Torres",
+        "fecha_ingreso": "2024-03-10"
+      },
+      "resultado_esperado": "El empleado conserva numero EMP-0001, correo ana.torres@empresa.com, nombre Ana Torres y fecha de ingreso 2024-03-10."
+    },
+    {
+      "id": "CP-04",
+      "escenario": "El número de empleado y el correo no cambian al editar",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Clic en editar-empleado-1",
+        "Cambiar empleado-puesto y empleado-departamento",
+        "Clic en empleado-guardar",
+        "Verificar numero-empleado-1 en tabla-empleados"
+      ],
+      "datos": {
+        "puesto": "Líder de Finanzas",
+        "departamento": "Finanzas",
+        "numero_empleado": "EMP-0001"
+      },
+      "resultado_esperado": "numero-empleado-1 sigue mostrando EMP-0001."
+    },
+    {
+      "id": "CP-05",
+      "escenario": "Puesto con el mínimo permitido de 2 caracteres",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con puesto de 2 caracteres",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "puesto": "QA",
+        "departamento": "Tecnología",
+        "status": "200"
+      },
+      "resultado_esperado": "La API responde 200 y el puesto es 'QA'."
+    },
+    {
+      "id": "CP-06",
+      "escenario": "Puesto con el máximo permitido de 60 caracteres",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con puesto de 60 caracteres",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "puesto": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "longitud": "60",
+        "departamento": "Operaciones",
+        "status": "200"
+      },
+      "resultado_esperado": "La API responde 200 y el puesto guardado tiene 60 caracteres."
+    },
+    {
+      "id": "CP-07",
+      "escenario": "Puesto de 1 carácter es rechazado",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo con puesto Analista"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con puesto de 1 carácter",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "puesto": "Q",
+        "departamento": "Tecnología",
+        "status": "422"
+      },
+      "resultado_esperado": "La API responde 422 y el puesto sigue siendo 'Analista'."
+    },
+    {
+      "id": "CP-08",
+      "escenario": "Puesto de 1 carácter es rechazado",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo con puesto Analista"
+      ],
+      "pasos": [
+        "Clic en editar-empleado-1",
+        "Escribir 'Q' en empleado-puesto",
+        "Seleccionar Tecnología en empleado-departamento",
+        "Clic en empleado-guardar",
+        "Verificar mensaje-error"
+      ],
+      "datos": {
+        "puesto": "Q",
+        "departamento": "Tecnología"
+      },
+      "resultado_esperado": "mensaje-error indica corregir el campo puesto y el puesto sigue 'Analista'."
+    },
+    {
+      "id": "CP-09",
+      "escenario": "Puesto de 61 caracteres es rechazado",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo con puesto Analista"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con puesto de 61 caracteres",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "puesto": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "longitud": "61",
+        "departamento": "Tecnología",
+        "status": "422"
+      },
+      "resultado_esperado": "La API responde 422 y el puesto sigue siendo 'Analista'."
+    },
+    {
+      "id": "CP-10",
+      "escenario": "Puesto de 61 caracteres es rechazado",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo con puesto Analista"
+      ],
+      "pasos": [
+        "Clic en editar-empleado-1",
+        "Escribir 61 caracteres en empleado-puesto",
+        "Seleccionar Tecnología en empleado-departamento",
+        "Clic en empleado-guardar",
+        "Verificar mensaje-error"
+      ],
+      "datos": {
+        "puesto": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "longitud": "61",
+        "departamento": "Tecnología"
+      },
+      "resultado_esperado": "mensaje-error indica corregir el campo puesto y el puesto sigue 'Analista'."
+    },
+    {
+      "id": "CP-11",
+      "escenario": "Puesto vacío es rechazado",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con puesto vacío"
+      ],
+      "datos": {
+        "puesto": "",
+        "departamento": "Tecnología",
+        "status": "422"
+      },
+      "resultado_esperado": "La API responde 422."
+    },
+    {
+      "id": "CP-12",
+      "escenario": "Puesto vacío es rechazado",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Clic en editar-empleado-1",
+        "Vaciar empleado-puesto",
+        "Seleccionar Tecnología en empleado-departamento",
+        "Clic en empleado-guardar",
+        "Verificar mensaje-error"
+      ],
+      "datos": {
+        "puesto": "",
+        "departamento": "Tecnología"
+      },
+      "resultado_esperado": "mensaje-error indica corregir el campo puesto."
+    },
+    {
+      "id": "CP-13",
+      "escenario": "Departamento fuera del catálogo es rechazado",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo con departamento Ventas",
+        "GET /api/departamentos no incluye Marketing"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con departamento Marketing",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "puesto": "Analista",
+        "departamento": "Marketing",
+        "status": "422"
+      },
+      "resultado_esperado": "La API responde 422 y el departamento sigue 'Ventas'."
+    },
+    {
+      "id": "CP-14",
+      "escenario": "Departamento fuera del catálogo es rechazado",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo con departamento Ventas"
+      ],
+      "pasos": [
+        "Clic en editar-empleado-1",
+        "Intentar establecer 'Marketing' en empleado-departamento",
+        "Clic en empleado-guardar",
+        "Verificar mensaje-error y fila-empleado-1"
+      ],
+      "datos": {
+        "puesto": "Analista",
+        "departamento": "Marketing"
+      },
+      "resultado_esperado": "mensaje-error indica corregir el campo departamento y el departamento sigue 'Ventas'."
+    },
+    {
+      "id": "CP-15",
+      "escenario": "Un empleado dado de baja no se puede editar",
+      "nivel": "api",
+      "precondiciones": [
+        "Empleado 1 dado de baja con fecha_baja 2026-10-01"
+      ],
+      "pasos": [
+        "Editar al empleado 1 con puesto Gerente y departamento Finanzas",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "puesto": "Gerente",
+        "departamento": "Finanzas",
+        "status": "409",
+        "detail": "No se puede editar a un empleado dado de baja"
+      },
+      "resultado_esperado": "La API responde 409 con detail 'No se puede editar a un empleado dado de baja' y el empleado conserva puesto Analista y departamento Ventas."
+    },
+    {
+      "id": "CP-16",
+      "escenario": "Dar de baja a un empleado activo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Dar de baja al empleado 1 con fecha_baja (endpoint asumido)",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "fecha_baja": "2026-11-06",
+        "status": "200",
+        "estado": "baja"
+      },
+      "resultado_esperado": "La API responde 200 y el empleado tiene estado 'baja' y fecha_baja '2026-11-06'."
+    },
+    {
+      "id": "CP-17",
+      "escenario": "Dar de baja a un empleado activo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Clic en baja-empleado-1",
+        "Escribir 2026-11-06 en empleado-fecha-baja",
+        "Clic en confirmar-baja",
+        "Verificar mensaje-exito"
+      ],
+      "datos": {
+        "fecha_baja": "2026-11-06"
+      },
+      "resultado_esperado": "mensaje-exito indica que la baja se registró."
+    },
+    {
+      "id": "CP-18",
+      "escenario": "El empleado dado de baja sigue en el directorio marcado como Baja",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Dar de baja al empleado 1 con fecha 2026-11-06",
+        "GET /api/empleados"
+      ],
+      "datos": {
+        "fecha_baja": "2026-11-06"
+      },
+      "resultado_esperado": "La lista incluye al empleado 1 con estado 'baja'."
+    },
+    {
+      "id": "CP-19",
+      "escenario": "El empleado dado de baja sigue en el directorio marcado como Baja",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "Clic en baja-empleado-1",
+        "Escribir 2026-11-06 en empleado-fecha-baja",
+        "Clic en confirmar-baja",
+        "Verificar fila-empleado-1 dentro de tabla-empleados",
+        "Verificar estado-empleado-1 y numero-empleado-1"
+      ],
+      "datos": {
+        "fecha_baja": "2026-11-06",
+        "estado_texto": "Baja",
+        "numero_empleado": "EMP-0001"
+      },
+      "resultado_esperado": "fila-empleado-1 está en tabla-empleados, estado-empleado-1 muestra 'Baja' y numero-empleado-1 muestra 'EMP-0001'."
+    },
+    {
+      "id": "CP-20",
+      "escenario": "Fecha de baja igual a la fecha de ingreso (límite permitido)",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo, ingreso 2024-03-10"
+      ],
+      "pasos": [
+        "Dar de baja al empleado 1 con fecha 2024-03-10",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "fecha_baja": "2024-03-10",
+        "status": "200"
+      },
+      "resultado_esperado": "La API responde 200 y el empleado tiene estado 'baja' y fecha_baja '2024-03-10'."
+    },
+    {
+      "id": "CP-21",
+      "escenario": "Fecha de baja un día anterior a la fecha de ingreso (primer valor inválido)",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo, ingreso 2024-03-10"
+      ],
+      "pasos": [
+        "Dar de baja al empleado 1 con fecha 2024-03-09",
+        "Consultar el empleado"
+      ],
+      "datos": {
+        "fecha_baja": "2024-03-09",
+        "status": "422"
+      },
+      "resultado_esperado": "La API responde 422; el empleado sigue 'activo' con fecha_baja vacía."
+    },
+    {
+      "id": "CP-22",
+      "escenario": "Fecha de baja un día anterior a la fecha de ingreso (primer valor inválido)",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe empleado id 1 activo, ingreso 2024-03-10"
+      ],
+      "pasos": [
+        "Clic en baja-empleado-1",
+        "Escribir 2024-03-09 en empleado-fecha-baja",
+        "Clic en confirmar-baja",
+        "Verificar mensaje-error y estado-empleado-1"
+      ],
+      "datos": {
+        "fecha_baja": "2024-03-09"
+      },
+      "resultado_esperado": "mensaje-error indica corregir el campo fecha_baja y estado-empleado-1 sigue 'Activo'."
+    },
+    {
+      "id": "CP-23",
+      "escenario": "Un empleado activo no tiene fecha de baja",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe empleado id 1 activo"
+      ],
+      "pasos": [
+        "GET /api/empleados/1"
+      ],
+      "datos": {
+        "estado": "activo",
+        "fecha_baja": ""
+      },
+      "resultado_esperado": "El empleado 1 tiene estado 'activo' y fecha_baja vacía (null)."
+    }
+  ]
+}
