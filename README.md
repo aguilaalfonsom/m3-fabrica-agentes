@@ -28,6 +28,8 @@ python -m uvicorn produccion.api:app --port 8000       # o: docker compose up -d
 | [docs/costos.md](docs/costos.md) | Benchmark baseline vs optimizado, estrategias y trade-offs |
 | [docs/seguridad.md](docs/seguridad.md) | 13 controles, evidencia real, OWASP y checklist |
 | [docs/despliegue.md](docs/despliegue.md) | Instalación, variables, Docker, ngrok, pruebas y CI |
+| [docs/evidencia.md](docs/evidencia.md) | Capturas del sistema real: Swagger, LangSmith, panel, costos, seguridad, CI |
+| [docs/video/demo_m4.mp4](docs/video/demo_m4.mp4) | **Video de demostración** (4:44, narrado) |
 
 ---
 
