@@ -1,0 +1,3 @@
+# Falsos positivos revisados a mano (uno por línea, por huella exacta; la regla sigue activa para todo lo demás).
+# .env.example línea 20: "API_KEYS=" es la variable vacía de ejemplo, no contiene ninguna llave.
+141236ab7f18e4dbb2ef937bd84d7cc9ec20d680:.env.example:generic-api-key:20

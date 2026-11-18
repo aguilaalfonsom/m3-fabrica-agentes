@@ -1,4 +1,39 @@
-# Fábrica de software con agentes · Módulo 3
+# Fábrica de software con agentes · Módulos 3 y 4
+
+> **Reto M4 · Sistema multi-agente en producción** (rama `m4-produccion`): la cadena de agentes del Módulo 3
+> expuesta como **API REST** contenedorizada, con **observabilidad** (LangSmith, logs JSON, métricas),
+> **optimización de costos** (−63 % medido contra el baseline, −100 % con caché) y **controles de seguridad
+> empresariales**. Todo vive en [`produccion/`](produccion/) y está documentado en [`docs/`](docs/).
+
+## Reto M4 · Inicio rápido
+
+```bash
+pip install -r produccion/requirements-dev.txt
+cp .env.example .env          # CLAUDE_CODE_OAUTH_TOKEN, LANGSMITH_API_KEY, API_KEYS
+python -m uvicorn produccion.api:app --port 8000       # o: docker compose up -d --build
+```
+
+| Endpoint | Para qué | Acceso |
+|---|---|---|
+| `GET /health` · `GET /ready` | Liveness y readiness | Público |
+| `POST /v1/criterios` | Historia de usuario → criterios Gherkin + casos de prueba (grafo multi-agente) | Rol `cliente` |
+| `GET /v1/metricas` · `GET /metrics` | Latencia, errores, costo, tokens, caché, bloqueos (JSON / Prometheus) | `cliente` o `lector` |
+| `GET /dashboard` | Panel de operación | Llave `lector` |
+| `GET /docs` | OpenAPI / Swagger | Público |
+
+| Documento | Contenido |
+|---|---|
+| [docs/arquitectura.md](docs/arquitectura.md) | Diagramas, flujo de una petición, concurrencia, resiliencia y decisiones |
+| [docs/observabilidad.md](docs/observabilidad.md) | LangSmith, logs con correlation ID, métricas, panel y runbook |
+| [docs/costos.md](docs/costos.md) | Benchmark baseline vs optimizado, estrategias y trade-offs |
+| [docs/seguridad.md](docs/seguridad.md) | 13 controles, evidencia real, OWASP y checklist |
+| [docs/despliegue.md](docs/despliegue.md) | Instalación, variables, Docker, ngrok, pruebas y CI |
+| [docs/evidencia.md](docs/evidencia.md) | Capturas del sistema real: Swagger, LangSmith, panel, costos, seguridad, CI |
+| [docs/video/demo_m4.mp4](docs/video/demo_m4.mp4) | **Video de demostración** (4:44, narrado) |
+
+---
+
+## Módulo 3 · La fábrica
 
 Una cadena de agentes orquestada con **LangGraph** que convierte una historia de usuario en una aplicación de
 gestión de empleados (FastAPI + SQLite + React) desplegada y probada (pytest + Playwright), con defensas de
