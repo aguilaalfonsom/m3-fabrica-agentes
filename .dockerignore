@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+.git/
+**/__pycache__/
+**/*.pyc
+app/
+salida/
+evidencia/
+historias/
+docs/
+logs/
+checkpoints.pkl
+produccion/datos/
+produccion/tests/
+.pytest_cache/

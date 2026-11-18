@@ -3,6 +3,22 @@
 Cambios relevantes a los agentes, validadores, flujos y hooks de la fábrica. El código de `app/` y los
 artefactos de `salida/` los generan los agentes y no se editan a mano.
 
+## [2.0.0] · 2026-11-18 · Reto M4 Sistema multi-agente en producción
+
+### Agregado
+- **`produccion/`**: API REST (FastAPI) sobre un grafo LangGraph de producción
+  (preparar → filtrar → analizar ⇄ validar → diseñar ⇄ validar → validar_salida), con OpenAPI, `/health`, `/ready`,
+  `/metrics`, `/v1/metricas` y `/dashboard`.
+- **Concurrencia y resiliencia**: semáforo + cola acotada (429 con Retry-After), timeout (504), reintentos con
+  validación, cascada de modelos y tope de gasto por petición.
+- **Observabilidad**: trazas en LangSmith con tokens y costo por agente, logs JSON con `X-Request-ID`, métricas Prometheus.
+- **Costos**: ruteo Haiku/Sonnet, contexto recortado por HU, caché SQLite; `benchmark_costos.py` (−63.1 % medido).
+- **Seguridad**: API keys con roles, límite por llave, PII enmascarada en entrada y salida, guardrail, auditoría con
+  huellas, errores sin eco, encabezados de seguridad, agentes sin herramientas.
+- **Despliegue**: `Dockerfile` (no root, HEALTHCHECK), `docker-compose.yml` endurecido, CI en GitHub Actions
+  (pytest, bandit, pip-audit, gitleaks, build, prueba de humo y publicación en GHCR).
+- **Documentación**: `docs/` (arquitectura, observabilidad, costos, seguridad, despliegue) y 20 pruebas.
+
 ## [1.1.0] · 2026-11-06 · Reto HU-10 Solicitar vacaciones
 
 ### Acceso al modelo con la cuenta personal

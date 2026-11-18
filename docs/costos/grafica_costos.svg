@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" font-family="Segoe UI, sans-serif">
+<rect width="640" height="360" fill="#ffffff"/>
+<text x="320" y="28" text-anchor="middle" font-size="16" font-weight="600" fill="#0f172a">Costo de LLM por lote de 4 historias (USD, precio de lista)</text>
+<rect x="70" y="50.0" width="150" height="260.0" rx="6" fill="#94a3b8"/>
+<text x="145.0" y="42.0" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">$0.600</text>
+<text x="145.0" y="332" text-anchor="middle" font-size="12" fill="#334155">Baseline</text>
+<rect x="260" y="214.1" width="150" height="95.9" rx="6" fill="#38bdf8"/>
+<text x="335.0" y="206.1" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">$0.221</text>
+<text x="335.0" y="332" text-anchor="middle" font-size="12" fill="#334155">Optimizado (1.ª vez)</text>
+<rect x="450" y="310.0" width="150" height="0.0" rx="6" fill="#4ade80"/>
+<text x="525.0" y="302.0" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">$0.000</text>
+<text x="525.0" y="332" text-anchor="middle" font-size="12" fill="#334155">Optimizado (repetida, caché)</text>
+<line x1="50" y1="310" x2="610" y2="310" stroke="#cbd5e1"/></svg>

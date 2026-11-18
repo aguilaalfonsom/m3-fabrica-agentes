@@ -1,0 +1,31 @@
+# Despliegue reproducible de la API de producción.
+#   cp .env.example .env   (y llena CLAUDE_CODE_OAUTH_TOKEN, LANGSMITH_API_KEY, API_KEYS)
+#   docker compose up -d --build
+#   curl http://localhost:8000/health
+services:
+  api:
+    build: .
+    image: ghcr.io/aguilaalfonsom/m3-fabrica-agentes-api:latest
+    env_file: .env                       # secretos solo por entorno; nunca dentro de la imagen
+    environment:
+      DIR_DATOS: /datos
+    ports:
+      - "8000:8000"
+    volumes:
+      - datos:/datos                     # caché y auditoría persisten entre reinicios
+    read_only: true                      # sistema de archivos inmutable; /tmp en memoria para el CLI
+    tmpfs:
+      - /tmp:size=256m
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    deploy:
+      resources:
+        limits: {cpus: "2", memory: 2g}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  datos:

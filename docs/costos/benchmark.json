@@ -1,0 +1,375 @@
+{
+  "resumen": {
+    "baseline": 0.600265,
+    "optimizado": 0.221453,
+    "optimizado_cache": 0.0,
+    "ahorro_primera_vez_pct": 63.1,
+    "ahorro_con_cache_pct": 81.6,
+    "calidad": {
+      "baseline": {
+        "validos": 4,
+        "escenarios": 66,
+        "casos": 113
+      },
+      "optimizado": {
+        "validos": 4,
+        "escenarios": 68,
+        "casos": 101
+      }
+    }
+  },
+  "filas": [
+    {
+      "modo": "baseline",
+      "hu": "HU-01",
+      "costo_usd": 0.172633,
+      "latencia_s": 79.39,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 12,
+      "casos": 35,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 1,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 1608,
+          "output_tokens": 132,
+          "costo_usd": 0.0078951
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 6947,
+          "output_tokens": 2221,
+          "costo_usd": 0.0481118
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 8927,
+          "output_tokens": 10512,
+          "costo_usd": 0.11662570000000001
+        }
+      ]
+    },
+    {
+      "modo": "baseline",
+      "hu": "HU-02",
+      "costo_usd": 0.122707,
+      "latencia_s": 54.79,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 12,
+      "casos": 24,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 1,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 1638,
+          "output_tokens": 141,
+          "costo_usd": 0.0081076
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 6977,
+          "output_tokens": 1873,
+          "costo_usd": 0.0229572
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 8518,
+          "output_tokens": 5729,
+          "costo_usd": 0.09164249999999999
+        }
+      ]
+    },
+    {
+      "modo": "baseline",
+      "hu": "HU-03",
+      "costo_usd": 0.103604,
+      "latencia_s": 59.17,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 14,
+      "casos": 23,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 1,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 1618,
+          "output_tokens": 147,
+          "costo_usd": 0.008086600000000001
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 6957,
+          "output_tokens": 2230,
+          "costo_usd": 0.0264442
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 8712,
+          "output_tokens": 5845,
+          "costo_usd": 0.06907369999999999
+        }
+      ]
+    },
+    {
+      "modo": "baseline",
+      "hu": "HU-10",
+      "costo_usd": 0.201321,
+      "latencia_s": 99.3,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 28,
+      "casos": 31,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 1,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 2205,
+          "output_tokens": 143,
+          "costo_usd": 0.0105903
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 7544,
+          "output_tokens": 6882,
+          "costo_usd": 0.07537340000000001
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 11412,
+          "output_tokens": 9351,
+          "costo_usd": 0.11535770000000001
+        }
+      ]
+    },
+    {
+      "modo": "optimizado",
+      "hu": "HU-01",
+      "costo_usd": 0.066983,
+      "latencia_s": 76.43,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 12,
+      "casos": 25,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 2,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 1629,
+          "output_tokens": 161,
+          "costo_usd": 0.00040837
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 3124,
+          "output_tokens": 1950,
+          "costo_usd": 0.030011299999999998
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 4878,
+          "output_tokens": 1944,
+          "costo_usd": 0.0303528
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 4902,
+          "output_tokens": 10793,
+          "costo_usd": 0.00621095
+        }
+      ]
+    },
+    {
+      "modo": "optimizado",
+      "hu": "HU-02",
+      "costo_usd": 0.033337,
+      "latencia_s": 51.04,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 11,
+      "casos": 22,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 1,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 1659,
+          "output_tokens": 165,
+          "costo_usd": 0.00041987000000000003
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 3154,
+          "output_tokens": 1732,
+          "costo_usd": 0.027954800000000002
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 4564,
+          "output_tokens": 7876,
+          "costo_usd": 0.00496239
+        }
+      ]
+    },
+    {
+      "modo": "optimizado",
+      "hu": "HU-03",
+      "costo_usd": 0.035518,
+      "latencia_s": 55.64,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 13,
+      "casos": 19,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 1,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 1639,
+          "output_tokens": 141,
+          "costo_usd": 0.00040287000000000005
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 3134,
+          "output_tokens": 1980,
+          "costo_usd": 0.030351799999999998
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 4767,
+          "output_tokens": 7980,
+          "costo_usd": 0.00476345
+        }
+      ]
+    },
+    {
+      "modo": "optimizado",
+      "hu": "HU-10",
+      "costo_usd": 0.085615,
+      "latencia_s": 106.43,
+      "desde_cache": false,
+      "resultado": "ok",
+      "escenarios": 32,
+      "casos": 35,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "intentos_analista": 1,
+      "intentos_disenador": 1,
+      "llamadas": [
+        {
+          "agente": "filtro",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 2226,
+          "output_tokens": 231,
+          "costo_usd": 0.00034574
+        },
+        {
+          "agente": "analista",
+          "modelo": "claude-sonnet-5-5",
+          "input_tokens": 7049,
+          "output_tokens": 7479,
+          "costo_usd": 0.07570520000000001
+        },
+        {
+          "agente": "disenador",
+          "modelo": "claude-haiku-5-5",
+          "input_tokens": 11449,
+          "output_tokens": 15497,
+          "costo_usd": 0.00956393
+        }
+      ]
+    },
+    {
+      "modo": "optimizado_cache",
+      "hu": "HU-01",
+      "costo_usd": 0.0,
+      "latencia_s": 0.0,
+      "desde_cache": true,
+      "escenarios": 12,
+      "casos": 25,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "llamadas": []
+    },
+    {
+      "modo": "optimizado_cache",
+      "hu": "HU-02",
+      "costo_usd": 0.0,
+      "latencia_s": 0.0,
+      "desde_cache": true,
+      "escenarios": 11,
+      "casos": 22,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "llamadas": []
+    },
+    {
+      "modo": "optimizado_cache",
+      "hu": "HU-03",
+      "costo_usd": 0.0,
+      "latencia_s": 0.0,
+      "desde_cache": true,
+      "escenarios": 13,
+      "casos": 19,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "llamadas": []
+    },
+    {
+      "modo": "optimizado_cache",
+      "hu": "HU-10",
+      "costo_usd": 0.0,
+      "latencia_s": 0.01,
+      "desde_cache": true,
+      "escenarios": 32,
+      "casos": 35,
+      "criterios_validos": true,
+      "casos_validos": true,
+      "llamadas": []
+    }
+  ],
+  "fecha": "2026-11-18 10:01"
+}

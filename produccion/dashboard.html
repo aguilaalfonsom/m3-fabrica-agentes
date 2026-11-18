@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de operación · Fábrica de agentes</title>
+<style>
+  :root { --fondo:#0f172a; --tarjeta:#1e293b; --texto:#e2e8f0; --suave:#94a3b8; --acento:#38bdf8;
+          --ok:#4ade80; --alerta:#fbbf24; --error:#f87171; --borde:#334155; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--fondo); color:var(--texto); }
+  header { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+           padding:16px 24px; border-bottom:1px solid var(--borde); }
+  h1 { font-size:18px; margin:0; } h1 span { color:var(--suave); font-weight:400; }
+  .llave { display:flex; gap:8px; } input { background:var(--tarjeta); border:1px solid var(--borde); color:var(--texto);
+           padding:6px 10px; border-radius:6px; width:220px; }
+  button { background:var(--acento); color:#0f172a; border:0; border-radius:6px; padding:6px 14px; font-weight:600; cursor:pointer; }
+  main { padding:20px 24px; max-width:1200px; margin:auto; }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:18px; }
+  .kpi { background:var(--tarjeta); border:1px solid var(--borde); border-radius:10px; padding:14px; }
+  .kpi .v { font-size:26px; font-weight:700; margin-top:4px; } .kpi .t { color:var(--suave); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:14px; }
+  section { background:var(--tarjeta); border:1px solid var(--borde); border-radius:10px; padding:14px; }
+  h2 { font-size:14px; margin:0 0 10px; color:var(--suave); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  td, th { padding:6px 4px; border-bottom:1px solid var(--borde); text-align:left; } th { color:var(--suave); font-weight:500; }
+  .barra { height:8px; background:var(--acento); border-radius:4px; }
+  .ok { color:var(--ok); } .alerta { color:var(--alerta); } .error { color:var(--error); }
+  #estado { color:var(--suave); font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Fábrica de agentes · <span>panel de operación</span></h1>
+  <div class="llave">
+    <input id="llave" type="password" placeholder="API key (rol lector o cliente)" autocomplete="off">
+    <button id="conectar">Conectar</button>
+  </div>
+  <div id="estado">Sin conexión</div>
+</header>
+<main>
+  <div class="kpis">
+    <div class="kpi"><div class="t">Peticiones /v1/criterios</div><div class="v" id="k-pet">–</div></div>
+    <div class="kpi"><div class="t">Latencia p50 / p95</div><div class="v" id="k-lat">–</div></div>
+    <div class="kpi"><div class="t">Errores 5xx</div><div class="v" id="k-err">–</div></div>
+    <div class="kpi"><div class="t">Costo LLM (USD)</div><div class="v" id="k-costo">–</div></div>
+    <div class="kpi"><div class="t">Ahorro por caché (USD)</div><div class="v ok" id="k-ahorro">–</div></div>
+    <div class="kpi"><div class="t">Tasa de aciertos de caché</div><div class="v" id="k-cache">–</div></div>
+    <div class="kpi"><div class="t">En curso</div><div class="v" id="k-curso">–</div></div>
+    <div class="kpi"><div class="t">Bloqueos de seguridad</div><div class="v alerta" id="k-bloq">–</div></div>
+  </div>
+  <div class="grid">
+    <section><h2>Costo por modelo</h2><table id="t-costo"></table></section>
+    <section><h2>Llamadas por agente y modelo (ruteo)</h2><table id="t-llamadas"></table></section>
+    <section><h2>Respuestas por ruta y estado</h2><table id="t-rutas"></table></section>
+    <section><h2>Seguridad: bloqueos y PII enmascarada</h2><table id="t-seg"></table></section>
+  </div>
+</main>
+<script>
+  const $ = (id) => document.getElementById(id);
+  let llave = "";
+  try { llave = sessionStorage.getItem("llave") || ""; } catch (e) {}
+  $("llave").value = llave;
+  const fila = (cols, th) => "<tr>" + cols.map(c => th ? `<th>${c}</th>` : `<td>${c}</td>`).join("") + "</tr>";
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  function barras(obj, fmt) {
+    const max = Math.max(1e-9, ...Object.values(obj));
+    return Object.entries(obj).sort((a,b)=>b[1]-a[1]).map(([k,v]) =>
+      fila([esc(k), fmt(v), `<div class="barra" style="width:${Math.max(4, 100*v/max)}%"></div>`])).join("");
+  }
+  async function actualizar() {
+    if (!llave) return;
+    try {
+      const r = await fetch("/v1/metricas", {headers: {"X-API-Key": llave}});
+      if (!r.ok) { $("estado").textContent = `Error ${r.status}`; $("estado").className = "error"; return; }
+      const m = await r.json();
+      const c = (m.rutas["/v1/criterios"] || {total:0, errores:0, latencia_ms:{p50:0,p95:0}});
+      $("k-pet").textContent = c.total;
+      $("k-lat").textContent = `${(c.latencia_ms.p50/1000).toFixed(1)} s / ${(c.latencia_ms.p95/1000).toFixed(1)} s`;
+      $("k-err").textContent = Object.values(m.rutas).reduce((a, r) => a + r.errores, 0);
+      $("k-costo").textContent = "$" + m.costo_total_usd.toFixed(4);
+      $("k-ahorro").textContent = "$" + m.ahorro_cache_usd.toFixed(4);
+      $("k-cache").textContent = Math.round(100 * m.cache.tasa_aciertos) + " %";
+      $("k-curso").textContent = m.en_curso;
+      $("k-bloq").textContent = Object.values(m.bloqueos).reduce((a, b) => a + b, 0);
+      $("t-costo").innerHTML = fila(["Modelo", "USD", ""], true) + barras(m.costo_usd, v => "$" + v.toFixed(4));
+      $("t-llamadas").innerHTML = fila(["Agente | modelo", "Llamadas", ""], true) + barras(m.llamadas_llm, v => v);
+      $("t-rutas").innerHTML = fila(["Ruta", "Estado", "Total"], true) + Object.entries(m.rutas).flatMap(([ruta, r]) =>
+        Object.entries(r.por_estado).map(([e, n]) => fila([esc(ruta), `<span class="${e >= 500 ? "error" : e >= 400 ? "alerta" : "ok"}">${e}</span>`, n]))).join("");
+      const seg = {...Object.fromEntries(Object.entries(m.bloqueos).map(([k,v]) => ["bloqueo: " + k, v])),
+                   ...Object.fromEntries(Object.entries(m.pii_detectada).map(([k,v]) => ["pii " + k, v]))};
+      $("t-seg").innerHTML = fila(["Evento", "Total", ""], true) + barras(seg, v => v);
+      $("estado").textContent = `Actualizado ${new Date().toLocaleTimeString()} · uptime ${m.uptime_s} s`;
+      $("estado").className = "ok";
+    } catch (e) { $("estado").textContent = "Sin conexión"; $("estado").className = "error"; }
+  }
+  $("conectar").onclick = () => { llave = $("llave").value.trim(); try { sessionStorage.setItem("llave", llave); } catch (e) {} actualizar(); };
+  actualizar(); setInterval(actualizar, 3000);
+</script>
+</body>
+</html>

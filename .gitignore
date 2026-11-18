@@ -12,3 +12,4 @@ ejemplos/salidas/
 checkpoints.pkl
 .despliegue_local.json
 logs/
+produccion/datos/
